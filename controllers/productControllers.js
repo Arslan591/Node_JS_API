@@ -1,30 +1,39 @@
 const express = require("express");
-const productServices = require("../services/productServices");
+const Data = require("../models/product");
 
 const getAllProducts = async (req, res) => {
-  const AllProducts = await productServices.getAllProducts(req);
+  const AllProducts = await Data.find();
   res.send(AllProducts);
 };
 
 const getProductById = async (req, res) => {
-  const specificProducts = await productServices.getProductById(req);
-  res.send(specificProducts);
+  const _id = req.params.id;
+  const specificProduct = await Data.findById(_id);
+  res.send(specificProduct);
 };
 
 const updateProductById = async (req, res) => {
-  const updateProduct = await productServices.updateProduct(req);
-  res.send(updateProduct);
+  const _id = req.params.id;
+  const updateProduct = await Data.findByIdAndUpdate(_id, req.body);
+  // res.send(allProducts);
+  console.log(updateProduct, "Hello");
 };
 
 const deleteProductById = async (req, res) => {
-  const deleteProduct = await productServices.deleteProductById(req);
-
-  res.send(deleteProduct);
+  const deleteProduct = await Data.findByIdAndDelete(req.params.id);
+  // res.send(allProducts);
+  console.log(deleteProduct, "Hello");
 };
 
 const createProduct = async (req, res) => {
-  const productinsert = await productServices.createProduct(req);
-  res.send(productinsert);
+  try {
+    const insertNewProduct = await Data(req.body);
+    console.log(req.body);
+    const productAdded = insertNewProduct.save();
+    res.send(productAdded);
+  } catch (e) {
+    res.send(e);
+  }
 };
 
 module.exports = {
